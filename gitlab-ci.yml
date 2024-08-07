@@ -1,0 +1,27 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  # Define Docker image name and tag
+  IMAGE_NAME: registry.gitlab.com/chamal1120/x86-asm-docker-dev-env/x86_assembly_docker
+  IMAGE_TAG: $CI_COMMIT_REF_NAME
+
+# Build and Push Docker Image
+build_and_push:
+  stage: build
+  script:
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+  only:
+    - main
+
+# Deployment (if applicable)
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying to production..."
+    # Add deployment commands here
+  only:
+    - tags
